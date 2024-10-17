@@ -1,7 +1,7 @@
 def integer_params_decorated(func):
     def wrapper(self, *args, **kwargs):
-        res1 = list(map(lambda x: isinstance(x, int), args))
-        res2 = list(map(lambda x: isinstance(x, int), kwargs.values()))
+        res1 = list(map(lambda x: type(x) == int, args))
+        res2 = list(map(lambda x: type(x) == int, kwargs.values()))
         res = res1 + res2
         if not all(res):
             raise TypeError("аргументы должны быть целыми числами")
@@ -37,10 +37,14 @@ class Vector:
 if __name__ == "__main__":
     vector = Vector(1, 2)
     print(vector[1])
-    vector.set_coords(1, 2, 3, reverse=True)
     print(vector[0])
 
     try:
         vector[1] = 20.4  # TypeError
+    except TypeError:
+        assert True, "исключение TypeError"
+
+    try:
+        vector.set_coords(1, 2, 3, reverse=True)  # TypeError
     except TypeError:
         assert True, "исключение TypeError"
