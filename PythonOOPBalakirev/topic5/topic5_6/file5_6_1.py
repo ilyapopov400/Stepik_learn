@@ -41,6 +41,22 @@ class Ship:
         return "{}: x={}, y={}, ориентация: {}, трубы: {}".format(self.__class__.__name__,
                                                                   self._x, self._y, orient, self._cells)
 
+    def _get_cords(self) -> list:
+        """
+        - получаем список координат с головы корабля
+        :return: tuple
+        """
+        result = list()
+        if self._tp == 1:
+            for x in range(self.length):
+                coord = self._x + x, self._y
+                result.append(coord)
+        else:
+            for y in range(self.length):
+                cords = self._x, self._y + y
+                result.append(cords)
+        return result
+
     def set_start_coords(self, x: int, y: int):
         """
         - установка начальных координат (запись значений в локальные атрибуты _x, _y)
@@ -64,7 +80,7 @@ class Ship:
         :return: None
         """
 
-    def is_collide(self, ship) -> bool:  # TODO
+    def is_collide(self, ship) -> bool:
         """
         - проверка на столкновение с другим кораблем ship
               (столкновением считается, если другой корабль или пересекается с текущим или просто соприкасается,
@@ -73,53 +89,12 @@ class Ship:
         :param ship:
         :return:
         """
-        self_x_start, self_y_start = self.get_start_coords()
-        other_x_start, other_y_start = ship.get_start_coords()
-
-        if self._tp == 1:
-            self_x_end, self_y_end = self_x_start + self.length - 1, self_y_start
-            """
-            - self горизонтальный
-            """
-            if ship.tp == 1:
-                """
-                - self горизонтальный
-                - other горизонтальный
-                """
-                other_x_end, other_y_end = other_x_start + ship.length - 1, other_y_start
-                if abs(self_y_start - other_y_start) <= 1:
-                    if self_x_start - other_x_end >= 2:
-                        return False
-                    if other_x_start - self_x_end >= 2:
-                        return False
-                    return True
-
-            else:  # TODO
-                """
-                - self горизонтальный
-                - other вертикальный
-                """
-        else:
-            """
-            - self вертикальный
-            """
-            self_x_end, self_y_end = self_x_start, self_y_start + self.length - 1
-            if ship.tp == 1:  # TODO
-                """
-                - self вертикальный
-                - other горизонтальный
-                """
-            else:
-                """
-                - self вертикальный
-                - other вертикальный
-                """
-                other_x_end, other_y_end = other_x_start, other_y_start + ship.length - 1
-                if abs(self_x_start - other_x_start) <= 1:
-                    if self_y_start - other_y_end >= 2:
-                        return False
-                    if other_y_start - self_y_end >= 2:
-                        return False
+        for self_cord in self._get_cords():
+            for other_cord in ship._get_cords():
+                a = (self_cord[0] - other_cord[0]) ** 2
+                b = (self_cord[1] - other_cord[1]) ** 2
+                hippo = (a + b) ** 0.5
+                if hippo <= 2**0.5:
                     return True
 
         return False
@@ -244,3 +219,65 @@ if __name__ == "__main__":
     a = Ship(length=4, x=2, y=5, tp=2)
     b = Ship(length=1, x=3, y=10, tp=2)
     assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    """
+    - self горизонтальный
+    - other вертикальный
+    """
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=4, x=2, y=5, tp=2)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=4, x=1, y=4, tp=2)
+    assert a.is_collide(b) is True, "ошибка проверки на столкновение кораблей, есть столкновение"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=4, x=1, y=3, tp=2)
+    assert a.is_collide(b) is True, "ошибка проверки на столкновение кораблей, есть столкновение"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=3, x=2, y=0, tp=2)
+    assert a.is_collide(b) is True, "ошибка проверки на столкновение кораблей, есть столкновение"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=3, x=7, y=4, tp=2)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=3, x=7, y=3, tp=2)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=3, x=4, y=2, tp=2)
+    assert a.is_collide(b) is True, "ошибка проверки на столкновение кораблей, есть столкновение"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=3, x=9, y=7, tp=2)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    a = Ship(length=4, x=2, y=3, tp=1)
+    b = Ship(length=2, x=4, y=0, tp=2)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    """
+    - self вертикальный
+    - other горизонтальный
+    """
+
+    a = Ship(length=4, x=2, y=3, tp=2)
+    b = Ship(length=2, x=4, y=2, tp=1)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    a = Ship(length=4, x=2, y=3, tp=2)
+    b = Ship(length=1, x=0, y=2, tp=1)
+    assert a.is_collide(b) is False, "ошибка проверки на столкновение кораблей, нет столкновения"
+
+    a = Ship(length=4, x=2, y=3, tp=2)
+    b = Ship(length=2, x=0, y=2, tp=1)
+    assert a.is_collide(b) is True, "ошибка проверки на столкновение кораблей, есть столкновение"
+
+    a = Ship(length=4, x=2, y=3, tp=2)
+    b = Ship(length=2, x=2, y=2, tp=1)
+    assert a.is_collide(b) is True, "ошибка проверки на столкновение кораблей, есть столкновение"
