@@ -69,7 +69,7 @@ class Ship:
         """
         return self._x, self._y
 
-    def move(self, go: int):  # TODO
+    def move(self, go: int):
         """
         - перемещение корабля в направлении его ориентации на go клеток
             (go = 1 - движение в одну сторону на клетку;
@@ -79,6 +79,11 @@ class Ship:
         :param go: int
         :return: None
         """
+        if self._is_move:
+            if self._tp == 1:
+                self._y += go
+            else:
+                self._x += go
 
     def is_collide(self, ship) -> bool:
         """
