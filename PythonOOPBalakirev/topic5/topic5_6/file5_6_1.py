@@ -1,3 +1,6 @@
+import random
+
+
 class Ship:
     """
     - для представления кораблей
@@ -169,6 +172,62 @@ class GamePole:
         self._size = size
         self._ships = list()
 
+    def get_ships(self):
+        return self._ships
+
+    @staticmethod
+    def пуе_list_ship_without_cords() -> list:
+        """
+
+        :return: список кораблей без координат
+        """
+        result = [
+            Ship(length=4, tp=random.randint(1, 2)),
+            Ship(length=3, tp=random.randint(1, 2)),
+            Ship(length=3, tp=random.randint(1, 2)),
+            Ship(length=2, tp=random.randint(1, 2)),
+            Ship(length=2, tp=random.randint(1, 2)),
+            Ship(length=2, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+        ]
+        return result
+
+    def __set_cords_ships(self, list_ship: list) -> list:
+        """
+
+        :param list_ship: список с кораблями
+        :return: список с кораблями с произвольно расставленными координатами
+        """
+        for ship in list_ship:
+            x, y = random.randint(0, self._size - 1), random.randint(0, self._size - 1)
+            ship.set_start_coords(x=x, y=y)
+        return list_ship
+
+    def _validate_exit(self, list_ship) -> bool:
+        """
+
+        :return: True если корабли из списка не выходят за пределы поля
+        """
+        for ship in list_ship:
+            if ship.is_out_pole(size=self._size):
+                return False
+        return True
+
+    def _validate_cross(self, list_ship) -> bool:
+        """
+
+        :param list_ship:
+        :return: True если корабли из списка не пересекаются друг с другом
+        """
+        for ship in list_ship:
+            for other in list_ship:
+                if ship.__hash__() != other.__hash__() and ship.is_collide(ship=other):
+                    return False
+        return True
+
     def init(self):  # TODO
         """
         - начальная инициализация игрового поля;
@@ -179,20 +238,43 @@ class GamePole:
           После этого, выполняется их расстановка на игровом поле со случайными координатами так,
                       чтобы корабли не пересекались между собой
         """
+        flag, step = True, 0
+        while flag:
+            step += 1
+            print(step)
+            start_list_ship = self.пуе_list_ship_without_cords()
+            list_ship = self.__set_cords_ships(list_ship=start_list_ship)
+
+            if self._validate_exit(list_ship):
+                if self._validate_cross(list_ship):
+                    flag = False
+                    break
+        self._ships = list_ship
+
+    def move_ships(self):  # TODO
+        """
+        - перемещает каждый корабль из коллекции _ships на одну клетку
+         (случайным образом вперед или назад) в направлении ориентации корабля;
+         если перемещение в выбранную сторону невозможно
+         (другой корабль или пределы игрового поля),
+         то попытаться переместиться в противоположную сторону,
+         иначе (если перемещения невозможны), оставаться на месте;
+        :return:
+        """
+        pass
 
 
 if __name__ == "__main__":
-    pass
-
-    p = GamePole(10)
+    size = 10
+    p = GamePole(size)
     p.init()
-    # for nn in range(5):
-    #     for s in p._ships:
-    #         assert s.is_out_pole(10) == False, "корабли выходят за пределы игрового поля"
-    #         for ship in p.get_ships():
-    #             if s != ship:
-    #                 assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
-    #     p.move_ships()
+    for nn in range(5):
+        for s in p._ships:
+            assert s.is_out_pole(size) == False, "корабли выходят за пределы игрового поля"
+            for ship in p.get_ships():
+                if s != ship:
+                    assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
+        p.move_ships()
     #
     # gp = p.get_pole()
     # assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
