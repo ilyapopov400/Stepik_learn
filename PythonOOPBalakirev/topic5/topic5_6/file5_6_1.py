@@ -3,7 +3,7 @@ class Ship:
     - для представления кораблей
     """
 
-    def __init__(self, length: int, x: int = None, y: int = None, tp: int = 1):
+    def __init__(self, length: int, tp: int = 1, x: int = None, y: int = None):
         """
 
         :param x: - координаты начала расположения корабля (целые числа)
@@ -22,7 +22,7 @@ class Ship:
         """
         if not isinstance(length, int) or length not in range(1, 5):
             raise ValueError("не верные параметры длинны корабля")
-        self.length = length
+        self._length = length
         self._x = x
         self._y = y
         self._tp = tp
@@ -41,18 +41,18 @@ class Ship:
         return "{}: x={}, y={}, ориентация: {}, трубы: {}".format(self.__class__.__name__,
                                                                   self._x, self._y, orient, self._cells)
 
-    def _get_cords(self) -> list:
+    def get_cords(self) -> list:
         """
         - получаем список координат с головы корабля
         :return: tuple
         """
         result = list()
         if self._tp == 1:
-            for x in range(self.length):
+            for x in range(self._length):
                 coord = self._x + x, self._y
                 result.append(coord)
         else:
-            for y in range(self.length):
+            for y in range(self._length):
                 cords = self._x, self._y + y
                 result.append(cords)
         return result
@@ -94,8 +94,8 @@ class Ship:
         :param ship:
         :return:
         """
-        for self_cord in self._get_cords():
-            for other_cord in ship._get_cords():
+        for self_cord in self.get_cords():
+            for other_cord in ship.get_cords():
                 a = (self_cord[0] - other_cord[0]) ** 2
                 b = (self_cord[1] - other_cord[1]) ** 2
                 hippo = (a + b) ** 0.5
@@ -122,13 +122,13 @@ class Ship:
             """
             - при горизонтальном расположении
             """
-            if self._x + self.length > size:
+            if self._x + self._length > size:
                 return True
         else:
             """
             - при вертикальном расположении
             """
-            if self._y + self.length > size:
+            if self._y + self._length > size:
                 return True
         return False
 
@@ -163,5 +163,20 @@ class GamePole:
 
 
 if __name__ == "__main__":
-    a = Ship(length=4, x=2, y=2, tp=1)
-    b = Ship(length=3, x=9, y=3, tp=1)
+    pass
+
+    # p = GamePole(10)
+    # p.init()
+    # for nn in range(5):
+    #     for s in p._ships:
+    #         assert s.is_out_pole(10) == False, "корабли выходят за пределы игрового поля"
+    #         for ship in p.get_ships():
+    #             if s != ship:
+    #                 assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
+    #     p.move_ships()
+    #
+    # gp = p.get_pole()
+    # assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
+    # assert len(gp) == 10 and len(gp[0]) == 10, "неверные размеры игрового поля, которое вернул метод get_pole"
+    # pole_size_8 = GamePole(8)
+    # pole_size_8.init()
