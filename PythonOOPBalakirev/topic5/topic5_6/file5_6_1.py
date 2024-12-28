@@ -1,4 +1,5 @@
 import random
+import copy
 
 
 class Ship:
@@ -35,6 +36,10 @@ class Ship:
     @property
     def tp(self):
         return self._tp
+
+    @property
+    def length(self):
+        return self._length
 
     def __repr__(self):
         if self._tp == 1:
@@ -176,7 +181,22 @@ class GamePole:
         return self._ships
 
     @staticmethod
-    def пуе_list_ship_without_cords() -> list:
+    def _temp_ship(ship: Ship):
+        """
+
+        :param ship:
+        :return: - возвращаем копию корабля
+        """
+        result = Ship(
+            length=ship.length,
+            tp=ship.tp,
+            x=ship.get_cords()[0],
+            y=ship.get_cords()[0],
+        )
+        return result
+
+    @staticmethod
+    def get_list_ship_without_cords() -> list:
         """
 
         :return: список кораблей без координат
@@ -228,7 +248,7 @@ class GamePole:
                     return False
         return True
 
-    def init(self):  # TODO
+    def init(self):
         """
         - начальная инициализация игрового поля;
                        здесь создается список из кораблей (объектов класса Ship):
@@ -241,8 +261,7 @@ class GamePole:
         flag, step = True, 0
         while flag:
             step += 1
-            print(step)
-            start_list_ship = self.пуе_list_ship_without_cords()
+            start_list_ship = self.get_list_ship_without_cords()
             list_ship = self.__set_cords_ships(list_ship=start_list_ship)
 
             if self._validate_exit(list_ship):
@@ -263,18 +282,43 @@ class GamePole:
         """
         pass
 
+    def show(self):
+        """
+        - отображение игрового поля в консоли
+         (корабли должны отображаться значениями из коллекции _cells каждого корабля,
+         вода - значением 0)
+        :return:
+        """
+        show_list = [
+            [0 for y in range(self._size)] for x in range(self._size)
+        ]
+        for ship in self._ships:
+            print(ship)
+            for x, y in ship.get_cords():
+                show_list[y][x] = 1
+        for x in range(self._size):
+            for y in range(self._size):
+                print(show_list[x][y], end=" ")
+            print("")
+
+    def get_pole(self) -> tuple:  # TODO
+        """
+        - получение текущего игрового поля в виде двумерного(вложенного) кортежа размерами size x size элементов
+        """
+
 
 if __name__ == "__main__":
     size = 10
     p = GamePole(size)
     p.init()
-    for nn in range(5):
-        for s in p._ships:
-            assert s.is_out_pole(size) == False, "корабли выходят за пределы игрового поля"
-            for ship in p.get_ships():
-                if s != ship:
-                    assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
-        p.move_ships()
+    p.show()
+    # for nn in range(5):
+    #     for s in p._ships:
+    #         assert s.is_out_pole(size) == False, "корабли выходят за пределы игрового поля"
+    #         for ship in p.get_ships():
+    #             if s != ship:
+    #                 assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
+    #     p.move_ships()
     #
     # gp = p.get_pole()
     # assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
