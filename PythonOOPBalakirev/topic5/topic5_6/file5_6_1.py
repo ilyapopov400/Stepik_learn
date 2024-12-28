@@ -282,12 +282,9 @@ class GamePole:
         """
         pass
 
-    def show(self):
+    def get_pole(self) -> tuple:
         """
-        - отображение игрового поля в консоли
-         (корабли должны отображаться значениями из коллекции _cells каждого корабля,
-         вода - значением 0)
-        :return:
+        - получение текущего игрового поля в виде двумерного(вложенного) кортежа размерами size x size элементов
         """
         show_list = [
             [0 for y in range(self._size)] for x in range(self._size)
@@ -296,15 +293,25 @@ class GamePole:
             print(ship)
             for x, y in ship.get_cords():
                 show_list[y][x] = 1
+
+        result = tuple(
+            map(tuple, show_list)
+        )
+
+        return result
+
+    def show(self):
+        """
+        - отображение игрового поля в консоли
+         (корабли должны отображаться значениями из коллекции _cells каждого корабля,
+         вода - значением 0)
+        :return:
+        """
+        show_list = self.get_pole()
         for x in range(self._size):
             for y in range(self._size):
                 print(show_list[x][y], end=" ")
             print("")
-
-    def get_pole(self) -> tuple:  # TODO
-        """
-        - получение текущего игрового поля в виде двумерного(вложенного) кортежа размерами size x size элементов
-        """
 
 
 if __name__ == "__main__":
