@@ -2,6 +2,40 @@ import random
 import copy
 
 
+class ErrorOutPole(Exception):
+    """
+    - выход за пределы игрового поля
+    """
+
+
+class ErrorIsCollide(Exception):
+    """
+    - пересечение с другими кораблями
+    """
+
+
+class TouchGamePole:
+    """
+    - контекстный менеджер для поля игры,
+     при изменении в расстановке кораблей и какой-либо колизии, изменения откатываются назад
+    """
+
+    def __init__(self, gamepole: list):
+        self._gamepole = gamepole
+
+    def __enter__(self):
+        self._temp_pole = list()
+        for ship in self._gamepole:
+            temp_ship = copy.deepcopy(ship)
+            self._temp_pole.append(temp_ship)
+        return self._temp_pole
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self._gamepole[:] = self._temp_pole
+        return False
+
+
 class Ship:
     """
     - для представления кораблей
@@ -177,6 +211,14 @@ class GamePole:
         self._size = size
         self._ships = list()
 
+    @property
+    def ships(self):
+        return self._ships
+
+    @ships.setter
+    def ships(self, ships):
+        self._ships = ships
+
     def get_ships(self):
         return self._ships
 
@@ -199,7 +241,7 @@ class GamePole:
     def get_list_ship_without_cords() -> list:
         """
 
-        :return: список кораблей без координат
+        :return: список кораблей без координат для инициализации
         """
         result = [
             Ship(length=4, tp=random.randint(1, 2)),
@@ -226,22 +268,16 @@ class GamePole:
             ship.set_start_coords(x=x, y=y)
         return list_ship
 
-    def _validate_exit(self, list_ship) -> bool:
+    @staticmethod
+    def _validate_exit_cross(list_ship: list, size: int) -> bool:  # TODO
         """
-
-        :return: True если корабли из списка не выходят за пределы поля
+        - True если корабли из списка не пересекаются друг с другом и не выходят зва границы поля
+        :param list_ship:
+        :return:
         """
         for ship in list_ship:
-            if ship.is_out_pole(size=self._size):
+            if ship.is_out_pole(size=size):
                 return False
-        return True
-
-    def _validate_cross(self, list_ship) -> bool:
-        """
-
-        :param list_ship:
-        :return: True если корабли из списка не пересекаются друг с другом
-        """
         for ship in list_ship:
             for other in list_ship:
                 if ship.__hash__() != other.__hash__() and ship.is_collide(ship=other):
@@ -264,10 +300,9 @@ class GamePole:
             start_list_ship = self.get_list_ship_without_cords()
             list_ship = self.__set_cords_ships(list_ship=start_list_ship)
 
-            if self._validate_exit(list_ship):
-                if self._validate_cross(list_ship):
-                    flag = False
-                    break
+            if self._validate_exit_cross(list_ship=list_ship, size=self._size):
+                flag = False
+                break
         self._ships = list_ship
 
     def move_ships(self):  # TODO
@@ -280,7 +315,16 @@ class GamePole:
          иначе (если перемещения невозможны), оставаться на месте;
         :return:
         """
-        pass
+        pass  # TODO
+        # for i in range(self._size):
+        #     try:
+        #         with TouchGamePole(self._ships) as sh:
+        #             sh[i].movi(go=1)
+        #             if not self._validate_exit_cross(list_ship=sh):
+        #                 raise ErrorOutPole
+        #
+        #     except ErrorOutPole:
+        #         print("ErrorOutPole")
 
     def get_pole(self) -> tuple:
         """
@@ -319,6 +363,9 @@ if __name__ == "__main__":
     p = GamePole(size)
     p.init()
     p.show()
+    # p.move_ships()
+    # p.show()
+
     # for nn in range(5):
     #     for s in p._ships:
     #         assert s.is_out_pole(size) == False, "корабли выходят за пределы игрового поля"
@@ -326,6 +373,8 @@ if __name__ == "__main__":
     #             if s != ship:
     #                 assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
     #     p.move_ships()
+    #
+    #
     #
     # gp = p.get_pole()
     # assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
