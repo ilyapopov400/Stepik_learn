@@ -1,39 +1,4 @@
 import random
-import copy
-
-
-class ErrorOutPole(Exception):
-    """
-    - выход за пределы игрового поля
-    """
-
-
-class ErrorIsCollide(Exception):
-    """
-    - пересечение с другими кораблями
-    """
-
-
-class TouchGamePole:
-    """
-    - контекстный менеджер для поля игры,
-     при изменении в расстановке кораблей и какой-либо колизии, изменения откатываются назад
-    """
-
-    def __init__(self, gamepole: list):
-        self._gamepole = gamepole
-
-    def __enter__(self):
-        self._temp_pole = list()
-        for ship in self._gamepole:
-            temp_ship = copy.deepcopy(ship)
-            self._temp_pole.append(temp_ship)
-        return self._temp_pole
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is None:
-            self._gamepole[:] = self._temp_pole
-        return False
 
 
 class Ship:
@@ -246,14 +211,14 @@ class GamePole:
         result = [
             Ship(length=4, tp=random.randint(1, 2)),
             Ship(length=3, tp=random.randint(1, 2)),
-            # Ship(length=3, tp=random.randint(1, 2)),
-            # Ship(length=2, tp=random.randint(1, 2)),
-            # Ship(length=2, tp=random.randint(1, 2)),
-            # Ship(length=2, tp=random.randint(1, 2)),
-            # Ship(length=1, tp=random.randint(1, 2)),
-            # Ship(length=1, tp=random.randint(1, 2)),
-            # Ship(length=1, tp=random.randint(1, 2)),
-            # Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=3, tp=random.randint(1, 2)),
+            Ship(length=2, tp=random.randint(1, 2)),
+            Ship(length=2, tp=random.randint(1, 2)),
+            Ship(length=2, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
+            Ship(length=1, tp=random.randint(1, 2)),
         ]
         return result
 
@@ -294,7 +259,7 @@ class GamePole:
           После этого, выполняется их расстановка на игровом поле со случайными координатами так,
                       чтобы корабли не пересекались между собой
         """
-        flag, step = True, 0
+        flag, step, list_ship = True, 0, list()
         while flag:
             step += 1
             start_list_ship = self.get_list_ship_without_cords()
@@ -315,26 +280,13 @@ class GamePole:
          иначе (если перемещения невозможны), оставаться на месте;
         :return:
         """
-        pass  # TODO
-        a = 0
-        for i in range(len(self._ships)):
-            a = a + 1
-            ship = self._ships[i]
+
+        for ship in self._ships:
             ship.move(go=1)
-            # try:
-            #     with TouchGamePole(self._ships) as sh:
-            #         sh[i].move(go=1)
-            #         if not self._validate_exit_cross(list_ship=sh, size=self._size):
-            #             raise ErrorOutPole
-            #         sh[i].move(go=-1)
-            #         if not self._validate_exit_cross(list_ship=sh, size=self._size):
-            #             raise ErrorOutPole
-            #         print(sh[i])
-            #
-            # except ErrorOutPole:
-            #     pass
-            #     print(i)
-            print(a)
+            if not self._validate_exit_cross(self._ships, self._size):
+                ship.move(go=-2)
+                if not self._validate_exit_cross(self._ships, self._size):
+                    ship.move(go=1)
 
     def get_pole(self) -> tuple:
         """
@@ -344,7 +296,6 @@ class GamePole:
             [0 for y in range(self._size)] for x in range(self._size)
         ]
         for ship in self._ships:
-            print(ship)
             for x, y in ship.get_cords():
                 show_list[y][x] = 1
 
@@ -369,26 +320,42 @@ class GamePole:
 
 
 if __name__ == "__main__":
-    size = 10
-    p = GamePole(size)
+    ship = Ship(2)
+    ship = Ship(2, 1)
+    ship = Ship(3, 2, 0, 0)
+    assert ship._length == 3 and ship._tp == 2 and ship._x == 0 and ship._y == 0, "неверные значения атрибутов объекта класса Ship"
+    assert ship._cells == [1, 1, 1], "неверный список _cells"
+    assert ship._is_move, "неверное значение атрибута _is_move"
+    ship.set_start_coords(1, 2)
+    assert ship._x == 1 and ship._y == 2, "неверно отработал метод set_start_coords()"
+    assert ship.get_start_coords() == (1, 2), "неверно отработал метод get_start_coords()"
+    ship.move(1)
+    s1 = Ship(4, 1, 0, 0)
+    s2 = Ship(3, 2, 0, 0)
+    s3 = Ship(3, 2, 0, 2)
+    assert s1.is_collide(s2), "неверно работает метод is_collide() для кораблей Ship(4, 1, 0, 0) и Ship(3, 2, 0, 0)"
+    assert s1.is_collide(
+        s3) == False, "неверно работает метод is_collide() для кораблей Ship(4, 1, 0, 0) и Ship(3, 2, 0, 2)"
+    s2 = Ship(3, 2, 1, 1)
+    assert s1.is_collide(s2), "неверно работает метод is_collide() для кораблей Ship(4, 1, 0, 0) и Ship(3, 2, 1, 1)"
+    s2 = Ship(3, 1, 8, 1)
+    assert s2.is_out_pole(10), "неверно работает метод is_out_pole() для корабля Ship(3, 1, 8, 1)"
+    s2 = Ship(3, 2, 1, 5)
+    assert s2.is_out_pole(10) == False, "неверно работает метод is_out_pole(10) для корабля Ship(3, 2, 1, 5)"
+    s2[0] = 2
+    assert s2[0] == 2, "неверно работает обращение ship[indx]"
+    p = GamePole(10)
     p.init()
-    p.show()
-    print("_______________________________________")
-    p.move_ships()
-    p.show()
+    for nn in range(5):
+        for s in p._ships:
+            assert s.is_out_pole(10) == False, "корабли выходят за пределы игрового поля"
+            for ship in p.get_ships():
+                if s != ship:
+                    assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
+        p.move_ships()
 
-    # for nn in range(5):
-    #     for s in p._ships:
-    #         assert s.is_out_pole(size) == False, "корабли выходят за пределы игрового поля"
-    #         for ship in p.get_ships():
-    #             if s != ship:
-    #                 assert s.is_collide(ship) == False, "корабли на игровом поле соприкасаются"
-    #     p.move_ships()
-    #
-    #
-    #
-    # gp = p.get_pole()
-    # assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
-    # assert len(gp) == 10 and len(gp[0]) == 10, "неверные размеры игрового поля, которое вернул метод get_pole"
-    # pole_size_8 = GamePole(8)
-    # pole_size_8.init()
+    gp = p.get_pole()
+    assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
+    assert len(gp) == 10 and len(gp[0]) == 10, "неверные размеры игрового поля, которое вернул метод get_pole"
+    pole_size_8 = GamePole(8)
+    pole_size_8.init()
