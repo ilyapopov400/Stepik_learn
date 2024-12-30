@@ -123,9 +123,9 @@ class Ship:
         """
         if self._is_move:
             if self._tp == 1:
-                self._y += go
-            else:
                 self._x += go
+            else:
+                self._y += go
 
     def is_collide(self, ship) -> bool:
         """
@@ -246,14 +246,14 @@ class GamePole:
         result = [
             Ship(length=4, tp=random.randint(1, 2)),
             Ship(length=3, tp=random.randint(1, 2)),
-            Ship(length=3, tp=random.randint(1, 2)),
-            Ship(length=2, tp=random.randint(1, 2)),
-            Ship(length=2, tp=random.randint(1, 2)),
-            Ship(length=2, tp=random.randint(1, 2)),
-            Ship(length=1, tp=random.randint(1, 2)),
-            Ship(length=1, tp=random.randint(1, 2)),
-            Ship(length=1, tp=random.randint(1, 2)),
-            Ship(length=1, tp=random.randint(1, 2)),
+            # Ship(length=3, tp=random.randint(1, 2)),
+            # Ship(length=2, tp=random.randint(1, 2)),
+            # Ship(length=2, tp=random.randint(1, 2)),
+            # Ship(length=2, tp=random.randint(1, 2)),
+            # Ship(length=1, tp=random.randint(1, 2)),
+            # Ship(length=1, tp=random.randint(1, 2)),
+            # Ship(length=1, tp=random.randint(1, 2)),
+            # Ship(length=1, tp=random.randint(1, 2)),
         ]
         return result
 
@@ -316,15 +316,25 @@ class GamePole:
         :return:
         """
         pass  # TODO
-        # for i in range(self._size):
-        #     try:
-        #         with TouchGamePole(self._ships) as sh:
-        #             sh[i].movi(go=1)
-        #             if not self._validate_exit_cross(list_ship=sh):
-        #                 raise ErrorOutPole
-        #
-        #     except ErrorOutPole:
-        #         print("ErrorOutPole")
+        a = 0
+        for i in range(len(self._ships)):
+            a = a + 1
+            ship = self._ships[i]
+            ship.move(go=1)
+            # try:
+            #     with TouchGamePole(self._ships) as sh:
+            #         sh[i].move(go=1)
+            #         if not self._validate_exit_cross(list_ship=sh, size=self._size):
+            #             raise ErrorOutPole
+            #         sh[i].move(go=-1)
+            #         if not self._validate_exit_cross(list_ship=sh, size=self._size):
+            #             raise ErrorOutPole
+            #         print(sh[i])
+            #
+            # except ErrorOutPole:
+            #     pass
+            #     print(i)
+            print(a)
 
     def get_pole(self) -> tuple:
         """
@@ -339,7 +349,7 @@ class GamePole:
                 show_list[y][x] = 1
 
         result = tuple(
-            map(tuple, show_list)
+            map(lambda x: tuple(x), show_list)
         )
 
         return result
@@ -352,9 +362,9 @@ class GamePole:
         :return:
         """
         show_list = self.get_pole()
-        for x in range(self._size):
-            for y in range(self._size):
-                print(show_list[x][y], end=" ")
+        for line in show_list:
+            for column in line:
+                print(column, end=" ")
             print("")
 
 
@@ -363,8 +373,9 @@ if __name__ == "__main__":
     p = GamePole(size)
     p.init()
     p.show()
-    # p.move_ships()
-    # p.show()
+    print("_______________________________________")
+    p.move_ships()
+    p.show()
 
     # for nn in range(5):
     #     for s in p._ships:
