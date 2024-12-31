@@ -101,6 +101,16 @@ class Ship:
         :param ship:
         :return:
         """
+        if self._x is None or self._y is None:
+            """
+            - если координаты не определены, считаем, что корабли не пересекаются
+            """
+            return False
+        if ship._x is None or ship._y is None:
+            """
+            - если координаты не определены, считаем, что корабли не пересекаются
+            """
+            return False
         for self_cord in self.get_cords():
             for other_cord in ship.get_cords():
                 a = (self_cord[0] - other_cord[0]) ** 2
@@ -121,6 +131,11 @@ class Ship:
         :param size: int
         :return:
         """
+        if self._x is None or self._y is None:
+            """
+            - если координаты не определены, считаем, что корабль внутри поля
+            """
+            return False
         if self._x + 1 > size or self._y + 1 > size:
             return True
         if self._x < 0 or self._y < 0:
@@ -176,31 +191,8 @@ class GamePole:
         self._size = size
         self._ships = list()
 
-    @property
-    def ships(self):
-        return self._ships
-
-    @ships.setter
-    def ships(self, ships):
-        self._ships = ships
-
     def get_ships(self):
         return self._ships
-
-    @staticmethod
-    def _temp_ship(ship: Ship):
-        """
-
-        :param ship:
-        :return: - возвращаем копию корабля
-        """
-        result = Ship(
-            length=ship.length,
-            tp=ship.tp,
-            x=ship.get_cords()[0],
-            y=ship.get_cords()[0],
-        )
-        return result
 
     @staticmethod
     def get_list_ship_without_cords() -> list:
@@ -222,21 +214,10 @@ class GamePole:
         ]
         return result
 
-    def __set_cords_ships(self, list_ship: list) -> list:
-        """
-
-        :param list_ship: список с кораблями
-        :return: список с кораблями с произвольно расставленными координатами
-        """
-        for ship in list_ship:
-            x, y = random.randint(0, self._size - 1), random.randint(0, self._size - 1)
-            ship.set_start_coords(x=x, y=y)
-        return list_ship
-
     @staticmethod
     def _validate_exit_cross(list_ship: list, size: int) -> bool:  # TODO
         """
-        - True если корабли из списка не пересекаются друг с другом и не выходят зва границы поля
+        - True если корабли из списка не пересекаются друг с другом и не выходят за границы поля
         :param list_ship:
         :return:
         """
@@ -259,16 +240,14 @@ class GamePole:
           После этого, выполняется их расстановка на игровом поле со случайными координатами так,
                       чтобы корабли не пересекались между собой
         """
-        flag, step, list_ship = True, 0, list()
-        while flag:
-            step += 1
-            start_list_ship = self.get_list_ship_without_cords()
-            list_ship = self.__set_cords_ships(list_ship=start_list_ship)
-
-            if self._validate_exit_cross(list_ship=list_ship, size=self._size):
-                flag = False
-                break
-        self._ships = list_ship
+        start_list_ship = self.get_list_ship_without_cords()
+        for ship_number in range(len(start_list_ship)):
+            while True:
+                x, y = random.randint(0, self._size - 1), random.randint(0, self._size - 1)
+                start_list_ship[ship_number].set_start_coords(x=x, y=y)
+                if self._validate_exit_cross(list_ship=start_list_ship, size=self._size):
+                    break
+        self._ships = start_list_ship
 
     def move_ships(self):  # TODO
         """
@@ -344,8 +323,11 @@ if __name__ == "__main__":
     assert s2.is_out_pole(10) == False, "неверно работает метод is_out_pole(10) для корабля Ship(3, 2, 1, 5)"
     s2[0] = 2
     assert s2[0] == 2, "неверно работает обращение ship[indx]"
+
     p = GamePole(10)
     p.init()
+    p.show()
+
     for nn in range(5):
         for s in p._ships:
             assert s.is_out_pole(10) == False, "корабли выходят за пределы игрового поля"
@@ -357,5 +339,7 @@ if __name__ == "__main__":
     gp = p.get_pole()
     assert type(gp) == tuple and type(gp[0]) == tuple, "метод get_pole должен возвращать двумерный кортеж"
     assert len(gp) == 10 and len(gp[0]) == 10, "неверные размеры игрового поля, которое вернул метод get_pole"
+
     pole_size_8 = GamePole(8)
     pole_size_8.init()
+    pole_size_8.show()
