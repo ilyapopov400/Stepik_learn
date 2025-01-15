@@ -17,16 +17,14 @@ def start_writing_logs():
     - функция для записи логов
     :return:
     """
-    while True:
+
+    with DataLogs() as data_db:
         data_cpu = StatisticsCPU()
         cpu, ram, date_time = data_cpu.cpu, data_cpu.ram, str(
             time.strftime("%x %X")
         )
-        print("Начата запись логов: {}, {}, {}".format(date_time, cpu, ram))
-        with DataLogs as db:  # TODO
-            db = DataLogs()
-            db(date_time, cpu, ram)
-            time.sleep(3)
+        print("Начата запись логов: {}: {}%, {}%".format(date_time, cpu, ram))
+        data_db(date_time, cpu, ram)
 
 
 if __name__ == "__main__":

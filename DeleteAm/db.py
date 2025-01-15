@@ -22,6 +22,15 @@ class DataLogs:
                             );
                         """)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            print(exc_type)
+            self.__del__()
+        return False
+
     def __call__(self, data_time: str, cpu: float, ram: float):
         """
         - записываем данные в таблицу
