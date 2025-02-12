@@ -1,0 +1,6 @@
+field name,english description,russian description,measure,okei_code,format
+date,,Дата,Сутки,359,date
+digital_code,,Цифровой код валюты (по стандарту ISO 4217),,,string
+letter_code,,Буквенный код валюты (по стандарту ISO 4217),,,string
+currency,,Наименование валюты,,,string
+rate,,Курс,Рубль,383,numeric
