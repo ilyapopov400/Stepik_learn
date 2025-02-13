@@ -1,0 +1,19 @@
+{% extends "user_app/base/base.html" %}
+
+{% block title %}заполните форму{% endblock %}
+
+{% block content %}
+<h1>Форма отзыва</h1>
+<form method="POST" action="">
+
+    <label for="name">Имя:</label>
+    <input type="text" id="name" name="name" required>
+    <br><br>
+    <label for="review">Отзыв:</label>
+    <textarea name="user_feedback" id='user_feedback' required></textarea>
+    <br><br>
+    <input type="submit" value="Отправить">
+    {% csrf_token %}
+</form>
+{% endblock %}
+

@@ -1,10 +1,11 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('about/', views.about, name='about'),
-    path("blog/<int:year>/", views.year_archive),
-    path("json/", views.json_response),
-    path("hello/<str:name>", views.hello),
+    path('', views.Index.as_view(), name='index'),
+    path("forma/", views.Forms.as_view(), name="forma"),
+    path("json/", views.json_response, name="json"),
+    path("hello/<str:name>", views.Hello.as_view(), name="hello_user"),
 ]
