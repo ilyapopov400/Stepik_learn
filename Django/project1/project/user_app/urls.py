@@ -8,4 +8,5 @@ urlpatterns = [
     path("forma/", views.Forms.as_view(), name="forma"),
     path("json/", views.json_response, name="json"),
     path("hello/<str:name>", views.Hello.as_view(), name="hello_user"),
+    path("download/", views.Download.as_view(), name="download"),
 ]
