@@ -3,11 +3,38 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="{% static 'dictionary/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'dictionary/css/style.css' %}">
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-{% block content %}
-{% endblock %}
+
+<header class="header">
+    <h2>Словарь иностранных слов</h2><br><br><br><br><br><br>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div>
+                <ul>
+                    <li><a href="{% url 'home' %}">домашняя страница</a></li>
+                    <li><a href="{% url 'home' %}">список слов</a></li>
+                    <li><a href="{% url 'home' %}">добавить слово</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-9">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<footer class="text-center">
+    <p>&copy; 2025 Мой сайт. Все права защищены.</p>
+</footer>
 </body>
 </html>

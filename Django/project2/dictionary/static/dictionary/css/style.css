@@ -1,0 +1,15 @@
+body {
+    background-color: #3dd5f3;
+}
+
+
+/*header style*/
+.header {
+    background-image: url('../img/cat.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+}
+
+
+
