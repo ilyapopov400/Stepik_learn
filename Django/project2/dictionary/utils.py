@@ -27,14 +27,21 @@ class BaseEngin:
         df.to_excel(self.filepath, index=False)  # index=False, что бы не появлялись колонки <Unnamed: 0>
 
     def read(self):
+        list_result = list()
         if not os.path.exists(self.filepath):  # при начале работы, когда нет файла
             print("NOT FILE")
             return
         df = pd.read_excel(self.filepath)
 
+        for i in range(len(df)):
+            line = df.loc[i]
+            key, value = line["word1"], line["word2"]
+            list_result.append([key, value])
+        return list_result
+
 
 if __name__ == "__main__":
     a = BaseEngin()
-    # a.write("hello", "привет")
-    # a.write("by", "пока")
+    # a.write("mother", "father")
+    # a.write("very", "match")
     a.read()

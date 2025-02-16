@@ -21,5 +21,7 @@ class AddWord(View):
     def post(self, request):
 
         word1, word2 = request.POST["word1"], request.POST["word2"]
-        add = utils.BaseEngin().write(word1=word1, word2=word2)
+        add_word = utils.BaseEngin()
+        # add_word.write(word1=word1, word2=word2)
+        add_word.read()
         return redirect(to="home")
