@@ -1,12 +1,40 @@
-class AddWord:
-    def __init__(self, word1: str, word2: str):
-        self.word1 = word1
-        self.word2 = word2
+import os
+import pandas as pd
 
-    def __call__(self):
-        print(self.word1, self.word2)
+
+class BaseEngin:
+    FILE_DIR = "exel_db"
+    FILE_DB = "data.xlsx"
+
+    def __init__(self):
+        self.filepath = os.path.join(self.FILE_DIR, self.FILE_DB)
+
+        if not os.path.exists(self.FILE_DIR):
+            os.makedirs('exel_db', exist_ok=True)
+            print("Create directory exel_db")
+
+    def write(self, word1: str, word2: str):
+        if not os.path.exists(self.filepath):  # при начале работы, когда нет файла
+            print("NOT FILE")
+            df = pd.DataFrame()  # создали пустой датафрейм
+        else:
+            df = pd.read_excel(self.filepath)
+        # Добавляем строку посредством словаря (параметр ignore_index=True нужен для сохранения порядка)
+        df = df._append(
+            {'word1': word1, 'word2': word2}, ignore_index=True
+        )
+
+        df.to_excel(self.filepath, index=False)  # index=False, что бы не появлялись колонки <Unnamed: 0>
+
+    def read(self):
+        if not os.path.exists(self.filepath):  # при начале работы, когда нет файла
+            print("NOT FILE")
+            return
+        df = pd.read_excel(self.filepath)
 
 
 if __name__ == "__main__":
-    a = AddWord("hello", "привет")
-    a()
+    a = BaseEngin()
+    # a.write("hello", "привет")
+    # a.write("by", "пока")
+    a.read()

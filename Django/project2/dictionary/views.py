@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from . import utils
 
@@ -21,5 +21,5 @@ class AddWord(View):
     def post(self, request):
 
         word1, word2 = request.POST["word1"], request.POST["word2"]
-        add = utils.AddWord(word1=word1, word2=word2)()
-        return render(request=request, template_name=self.template_name)
+        add = utils.BaseEngin().write(word1=word1, word2=word2)
+        return redirect(to="home")
