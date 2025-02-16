@@ -1,0 +1,13 @@
+{% extends "dictionary/base/base.html" %}
+
+{% block title %}ваш словарь{% endblock %}
+
+{% block content %}
+<div>
+    <H2>Ваш словарь:</H2>
+    {% for line in words %}
+    <h4>{{ line.0 }} перевод {{ line.1 }} <br> </h4>
+    {% endfor %}
+</div>
+{% endblock %}
+
