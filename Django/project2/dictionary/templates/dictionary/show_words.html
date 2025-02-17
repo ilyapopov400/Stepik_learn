@@ -3,10 +3,16 @@
 {% block title %}ваш словарь{% endblock %}
 
 {% block content %}
-<div>
-    <H2>Ваш словарь:</H2>
+<div class="words_list">
+    <div class="row mb-3">
+        <div class="col-md-6 themed-grid-col text-center"><h4>иностранное слово</h4></div>
+        <div class="col-md-6 themed-grid-col text-center"><h4>перевод</h4></div>
+    </div>
     {% for line in words %}
-    <h4>{{ line.0 }} перевод {{ line.1 }} <br> </h4>
+    <div class="row mb-3">
+        <div class="col-md-6 themed-grid-col word1 text-center">{{ line.0 }}</div>
+        <div class="col-md-6 themed-grid-col word2 text-center">{{ line.1 }}</div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
