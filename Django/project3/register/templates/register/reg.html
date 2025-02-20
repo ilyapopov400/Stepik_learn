@@ -1,0 +1,58 @@
+{% extends "notes/base/base.html" %}
+
+{% block title %}регистрация{% endblock %}
+
+{% block content %}
+<form action="." method="post">
+    {% csrf_token %}
+
+    <h1 class="h3 mb-3 fw-normal">Зарегистрируйтесь</h1>
+    <div class="container">
+        <div class="row">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="username" placeholder="name@example.com">
+                <label for="username">username</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="first_name" placeholder="name@example.com">
+                <label for="first_name">first_name</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="last_name" placeholder="name@example.com">
+                <label for="last_name">last_name</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                <label for="email">email</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password1" placeholder="Password">
+                <label for="password1">password1</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password2" placeholder="Password">
+                <label for="password2">password2</label>
+            </div>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary w-100 py-2" type="submit">зарегистрироваться</button>
+        </div>
+
+
+    </div>
+
+
+</form>
+{% endblock %}
+
+
