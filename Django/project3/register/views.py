@@ -39,6 +39,26 @@ class UserReg(View):
         return render(request=request, template_name=self.template_name_redirect)
 
 
+class Login(View):
+    template_name = "register/login.html"
+    template_name_redirect = "notes/index.html"
+    template_name_bad_redirect = "register/bad_reg.html"
+
+    def get(self, request):
+        return render(request=request, template_name=self.template_name)
+
+    def post(self, request):
+        data = request.POST
+        try:
+            user = authenticate(request, username=data['username'], password=data['password'])
+            if user is None:
+                return render(request=request, template_name=self.template_name_bad_redirect)
+            login(request, user)
+            return render(request=request, template_name=self.template_name_redirect)
+        except KeyError:
+            return render(request=request, template_name=self.template_name_bad_redirect)
+
+
 class Logout(View):
     template_name = "register/logout.html"
     template_name_redirect = "notes/index.html"
