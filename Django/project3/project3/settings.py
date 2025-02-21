@@ -125,3 +125,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'register.CustomUser'
+
+LOGIN_REDIRECT_URL = 'notes:index'
+LOGOUT_REDIRECT_URL = 'notes:index'

@@ -1,0 +1,14 @@
+{% extends "notes/base/base.html" %}
+
+{% block title %}отписаться{% endblock %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <button class="btn btn-primary w-100 py-2" type="submit">отписаться</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
