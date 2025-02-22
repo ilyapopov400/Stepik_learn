@@ -21,10 +21,4 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-class Notes(models.Model):
-    note = models.TextField()
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
-    class Meta:
-        verbose_name = 'Note'
-        verbose_name_plural = 'Notes'
