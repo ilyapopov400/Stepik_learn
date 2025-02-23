@@ -7,8 +7,17 @@
     <div class="row">
         {% if request.user.is_authenticated %}
         <h2>Ваши посты</h2>
+        {% for note in notes%}
+        <div class="row">
+            <div class="note">
+                <p>{{ note }}</p>
+            </div>
+
+        </div>
+        {% endfor %}
         <a href="{% url 'notes:add_note' %}">добавить пост</a>
         {% endif %}
     </div>
 </div>
+
 {% endblock %}
