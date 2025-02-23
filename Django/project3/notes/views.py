@@ -39,7 +39,7 @@ class AddNote(View):
 
         user = users_models.objects.get(username=request.user)
         notes_models.user = user
-        notes_models.note = request.POST["note"]
+        notes_models.note = request.POST["note-text"]
         notes_models.save()
 
         notes_user = Notes.objects.filter(user=request.user)

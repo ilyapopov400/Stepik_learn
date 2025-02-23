@@ -9,11 +9,13 @@
         <h2>Ваши посты</h2>
         {% for note in notes%}
         <div class="row">
-            <div class="note">
+            <div class="my-note">
                 <p>{{ note }}</p>
             </div>
 
         </div>
+        {% empty %}
+        <p>у Вас еще нет постов</p>
         {% endfor %}
         <a href="{% url 'notes:add_note' %}">добавить пост</a>
         {% endif %}

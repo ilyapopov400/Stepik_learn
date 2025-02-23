@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = password1
+        self.set_password(password1)
         self.save()
 
     class Meta:
