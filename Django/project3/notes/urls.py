@@ -6,5 +6,6 @@ urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('add_note', views.AddNote.as_view(), name='add_note'),
     path('add_note/', views.AddNote.as_view(), name='add_note'),
+    path('note/', views.Note.as_view(), name='note'),
 
 ]

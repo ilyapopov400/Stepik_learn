@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views import View
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 
 from register import models as register_models
@@ -12,11 +13,14 @@ class Index(View):
     template_name = "notes/index.html"
 
     def get(self, request):
-        notes_models = Notes
-        notes_user = notes_models.objects.filter(user=request.user)
-        content = {"notes": list(
-            map(lambda x: x.note, notes_user)
-        )}
+        if request.user.is_anonymous is False:
+            notes_models = Notes
+            notes_user = notes_models.objects.filter(user=request.user)
+            content = {"notes": list(
+                map(lambda x: x.note, notes_user)
+            )}
+        else:
+            content = {"notes": None}
 
         return render(
             request=request, template_name=self.template_name, context=content
@@ -48,3 +52,14 @@ class AddNote(View):
         )}
 
         return render(request=request, template_name=self.template_name_redirect, context=content)
+
+
+class Note(View):
+    """
+    - просмотр одного поста пользователя
+    """
+    template_name = "notes/note.html"
+
+    def get(self, request):
+        content = {"note": "post of user"}
+        return render(request=request, template_name=self.template_name, context=content)
