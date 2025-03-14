@@ -1,0 +1,18 @@
+{% extends "app/base/base.html" %}
+
+{% block title %}добавить книгу{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <p>Добавьте новую книгу</p>
+    </div>
+    <div class="row">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">добавить книгу</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
