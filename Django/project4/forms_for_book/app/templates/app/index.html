@@ -5,8 +5,27 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <p>Главная страница</p>
+        <div class="col-3">
+            <p>автор книги</p>
+        </div>
+        <div class="col-9">
+            <p>название книги</p>
+        </div>
     </div>
+    {% for book in books %}
+    <div class="row">
+        <div class="col-3">
+            {{ book.0 }}
+        </div>
+        <div class="col-9">
+            {{ book.1 }}
+        </div>
+    </div>
+    {% empty %}
+    <div class="row">
+        <p>нет записей о книгах</p>
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

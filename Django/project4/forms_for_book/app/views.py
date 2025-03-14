@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
+from . import models
 from . import forms
 
 
@@ -11,7 +12,12 @@ class Index(View):
     template_name = "app/index.html"
 
     def get(self, request):
-        return render(request=request, template_name=self.template_name)
+        books = list()
+        for book in models.Books.objects.all():
+            books.append((book.author, book.title))
+        context = {"books": books}
+
+        return render(request=request, template_name=self.template_name, context=context)
 
 
 class AddBook(View):

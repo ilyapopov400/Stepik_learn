@@ -5,11 +5,11 @@ from django.db import models
 
 class Books(models.Model):
     author = models.CharField(max_length=10)
-    content = models.TextField()
+    title = models.CharField(max_length=10)
 
     def __str__(self):
-        if len(self.content) < 7:
-            text = "{} - {}".format(self.author, self.content)
+        if len(self.title) < 7:
+            text = "{} - {}".format(self.author, self.title)
         else:
-            text = "{} - {}".format(self.author, self.content[:7])
+            text = "{} - {}".format(self.author, self.title[:7])
         return text

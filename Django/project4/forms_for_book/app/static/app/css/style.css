@@ -2,7 +2,12 @@ body {
     background-color: #20c997;
 }
 
+.container {
+    margin-bottom: 10px;
+}
+
 .row {
     background-color: #9eeaf9;
     border-radius: 5px;
+    margin-bottom: 5px;
 }
